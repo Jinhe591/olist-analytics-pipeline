@@ -1,0 +1,20 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "xprotocol",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 33060,
+            "driver": "MySQL",
+            "name": "Hadi",
+            "username": "root",
+            "database": "olist_warehouse",
+            "password": "Malgus12",
+            "connectionTimeout": 30
+        }
+    ]
+}
