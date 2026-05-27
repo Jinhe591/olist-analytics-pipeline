@@ -1,0 +1,49 @@
+# ── Python ────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.so
+
+# ── Virtual environments ───────────────────
+venv/
+.venv/
+env/
+.env/
+
+# ── Environment / secrets ──────────────────
+.env
+*.env
+.kaggle/
+
+# ── Data (raw is large; processed is reproducible) ──
+data/raw/
+data/processed/
+
+# ── Logs ──────────────────────────────────
+logs/
+*.log
+
+# ── IDE ────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── OS ─────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Pytest ─────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ── Power BI (binary, tracked separately) ──
+dashboards/*.pbix
