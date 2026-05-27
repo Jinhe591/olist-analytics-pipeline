@@ -22,9 +22,6 @@ env/
 *.env
 .kaggle/
 
-# ── Data (raw is large; processed is reproducible) ──
-data/raw/
-data/processed/
 
 # ── Logs ──────────────────────────────────
 logs/
