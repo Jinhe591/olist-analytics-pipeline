@@ -1,0 +1,45 @@
+table 'public stg_sellers'
+	lineageTag: f7fe8cdf-3429-4f70-b9c5-f270a7cd8ef6
+
+	column seller_id
+		dataType: string
+		lineageTag: ae7a1497-92dc-4dff-b9cf-a213148af4a0
+		summarizeBy: none
+		sourceColumn: seller_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_zip_code_prefix
+		dataType: int64
+		formatString: 0
+		lineageTag: d6e191b7-7d97-4021-a1a6-8c3d746167f0
+		summarizeBy: sum
+		sourceColumn: seller_zip_code_prefix
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_city
+		dataType: string
+		lineageTag: da5c7fd8-e602-4ca9-8460-4ac089cfc6a2
+		summarizeBy: none
+		sourceColumn: seller_city
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_state
+		dataType: string
+		lineageTag: 56b13e39-b491-4e67-aeda-d4b98379c6cb
+		summarizeBy: none
+		sourceColumn: seller_state
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public stg_sellers' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_stg_sellers = Source{[Schema="public",Item="stg_sellers"]}[Data]
+				in
+				    public_stg_sellers
+

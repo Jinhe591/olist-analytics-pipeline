@@ -1,0 +1,79 @@
+table 'public stg_order_items'
+	lineageTag: daae60d9-6fdc-47fd-a037-96c66461fb24
+
+	column order_id
+		dataType: string
+		lineageTag: 549c9e5f-cb93-4726-b51a-35febf1cfe7d
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_item_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 303d99ba-a023-4a17-807d-3752d99ef8d0
+		summarizeBy: sum
+		sourceColumn: order_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: string
+		lineageTag: ff4405a3-bb07-43c4-be1f-b4e790f12fe3
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_id
+		dataType: string
+		lineageTag: ec49803d-45d8-4643-8f3f-34b84d8fa2d4
+		summarizeBy: none
+		sourceColumn: seller_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipping_limit_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: dc5e348a-e527-4bdc-9af3-5afbe72cec32
+		summarizeBy: none
+		sourceColumn: shipping_limit_date
+
+		variation Variation
+			isDefault
+			relationship: be3fbfc8-5f8f-409f-b1ea-82ceeb6c38c2
+			defaultHierarchy: LocalDateTable_4c9c0c18-2427-4bdb-b5cd-e951c6e1562f.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column price
+		dataType: double
+		lineageTag: 661461a0-3058-4d2f-8472-5b803a0ed74f
+		summarizeBy: sum
+		sourceColumn: price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column freight_value
+		dataType: double
+		lineageTag: 55c3efc0-431a-45bd-acf7-fec338e90a72
+		summarizeBy: sum
+		sourceColumn: freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'public stg_order_items' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_stg_order_items = Source{[Schema="public",Item="stg_order_items"]}[Data]
+				in
+				    public_stg_order_items
+

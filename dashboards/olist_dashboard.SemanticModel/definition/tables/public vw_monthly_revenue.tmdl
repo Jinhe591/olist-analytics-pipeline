@@ -1,0 +1,104 @@
+table 'public vw_monthly_revenue'
+	lineageTag: eb1d7f38-deb2-469c-8a9a-8be1b2458ac1
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 1d65a12d-70f9-4ce3-996f-d466cb032081
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: 25134b99-1873-40c6-8e96-56f14c350d9b
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name_short
+		dataType: string
+		lineageTag: 931c60f4-cc42-4581-96bc-35eabb399515
+		summarizeBy: none
+		sourceColumn: month_name_short
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_month
+		dataType: string
+		lineageTag: 1e361829-a9a3-4f77-a034-e1121abdb8cd
+		summarizeBy: none
+		sourceColumn: year_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_orders
+		dataType: int64
+		formatString: 0
+		lineageTag: 62cce954-c9be-4b40-be3d-ba562abbd4fa
+		summarizeBy: sum
+		sourceColumn: total_orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_revenue
+		dataType: double
+		lineageTag: cd43a10a-043d-4ac1-96ad-805851e93940
+		summarizeBy: sum
+		sourceColumn: total_revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_freight
+		dataType: double
+		lineageTag: 519b483a-755b-464f-99ee-febd1de7d0cd
+		summarizeBy: sum
+		sourceColumn: total_freight
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_order_value
+		dataType: double
+		lineageTag: 90ae824a-3c5f-49c9-b828-70e89f7f5d44
+		summarizeBy: sum
+		sourceColumn: total_order_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_order_value
+		dataType: double
+		lineageTag: e3548b8e-4929-4f7e-a189-46e8199a54db
+		summarizeBy: sum
+		sourceColumn: avg_order_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column unique_customers
+		dataType: int64
+		formatString: 0
+		lineageTag: c37fa400-239d-4bd3-81b4-d4f8993447b6
+		summarizeBy: sum
+		sourceColumn: unique_customers
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public vw_monthly_revenue' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_vw_monthly_revenue = Source{[Schema="public",Item="vw_monthly_revenue"]}[Data]
+				in
+				    public_vw_monthly_revenue
+

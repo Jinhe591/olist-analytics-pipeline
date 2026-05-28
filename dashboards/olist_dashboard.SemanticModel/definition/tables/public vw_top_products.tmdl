@@ -1,0 +1,75 @@
+table 'public vw_top_products'
+	lineageTag: 4485f3b1-6a5b-4946-a89e-ea31c5e3e3c3
+
+	column product_id
+		dataType: string
+		lineageTag: 2a93f2d7-5d3f-493a-86f9-61c97432f8a1
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: 3bff3664-28b3-47ff-80b1-007a4d69972c
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_orders
+		dataType: int64
+		formatString: 0
+		lineageTag: b0e204b4-2d01-4b73-8378-35a6af38edaf
+		summarizeBy: sum
+		sourceColumn: total_orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column units_sold
+		dataType: int64
+		formatString: 0
+		lineageTag: 85fb6f3c-b5ae-41c9-a435-ddfde75db964
+		summarizeBy: sum
+		sourceColumn: units_sold
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_revenue
+		dataType: double
+		lineageTag: b717963f-b112-4ae4-a065-c3c56e7fc89e
+		summarizeBy: sum
+		sourceColumn: total_revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_price
+		dataType: double
+		lineageTag: 68024fa3-61f8-4cd7-868e-f0f47d42fffc
+		summarizeBy: sum
+		sourceColumn: avg_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column revenue_rank
+		dataType: int64
+		formatString: 0
+		lineageTag: eee9ba3e-cc6a-4528-840a-8bf2268aa309
+		summarizeBy: sum
+		sourceColumn: revenue_rank
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public vw_top_products' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_vw_top_products = Source{[Schema="public",Item="vw_top_products"]}[Data]
+				in
+				    public_vw_top_products
+

@@ -1,0 +1,103 @@
+table 'public vw_seller_performance'
+	lineageTag: 9583f71a-d8bb-4c42-9ce5-b5e029ef7ce0
+
+	column seller_id
+		dataType: string
+		lineageTag: 0fbdd945-2a72-418e-be24-bfaad8e960c0
+		summarizeBy: none
+		sourceColumn: seller_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_city
+		dataType: string
+		lineageTag: 06c96f6b-20ea-47fb-8db6-8ddfbb34dd36
+		summarizeBy: none
+		sourceColumn: seller_city
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_state
+		dataType: string
+		lineageTag: 57bd8186-a29b-4003-8a54-78526b0a63fd
+		summarizeBy: none
+		sourceColumn: seller_state
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_orders
+		dataType: int64
+		formatString: 0
+		lineageTag: 21b76b13-a9fa-4796-b23a-45bab22944b2
+		summarizeBy: sum
+		sourceColumn: total_orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_items_sold
+		dataType: int64
+		formatString: 0
+		lineageTag: cda5c631-39b4-4e32-b706-1bd0ea506692
+		summarizeBy: sum
+		sourceColumn: total_items_sold
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_revenue
+		dataType: double
+		lineageTag: 5eedc8ef-c725-46a3-9e2b-7e4fde3875d5
+		summarizeBy: sum
+		sourceColumn: total_revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_item_price
+		dataType: double
+		lineageTag: 8c97b0c7-42ba-4b6a-8087-51ea6b98c967
+		summarizeBy: sum
+		sourceColumn: avg_item_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_freight_collected
+		dataType: double
+		lineageTag: 954c0224-645b-4f24-8c07-05c66d2938cc
+		summarizeBy: sum
+		sourceColumn: total_freight_collected
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column unique_categories
+		dataType: int64
+		formatString: 0
+		lineageTag: c622380a-13e5-4b5e-b8c0-0fc4064eb35f
+		summarizeBy: sum
+		sourceColumn: unique_categories
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_late_delivery_pct
+		dataType: double
+		lineageTag: 82c756bb-9d61-47c7-b330-789bc2135924
+		summarizeBy: sum
+		sourceColumn: seller_late_delivery_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'public vw_seller_performance' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_vw_seller_performance = Source{[Schema="public",Item="vw_seller_performance"]}[Data]
+				in
+				    public_vw_seller_performance
+

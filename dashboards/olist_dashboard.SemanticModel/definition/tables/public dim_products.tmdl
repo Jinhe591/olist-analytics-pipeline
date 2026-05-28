@@ -1,0 +1,85 @@
+table 'public dim_products'
+	lineageTag: 9cbd7433-b123-49f5-8699-5aa1ad96cec5
+
+	column product_sk
+		dataType: int64
+		formatString: 0
+		lineageTag: a65e66fb-0fd5-426c-89b8-3f043c3916bd
+		summarizeBy: none
+		sourceColumn: product_sk
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: string
+		lineageTag: 2728c6f8-084e-4a60-bfbc-43ca0c2ae3ca
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_category_name
+		dataType: string
+		lineageTag: 665b9ea3-0861-444e-a6e0-c8feb5b32d2e
+		summarizeBy: none
+		sourceColumn: product_category_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_category_name_english
+		dataType: string
+		lineageTag: 3e7b2a96-cb7e-46e8-a852-ff1fc28e127b
+		summarizeBy: none
+		sourceColumn: product_category_name_english
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_weight_g
+		dataType: double
+		lineageTag: be11afcd-33e7-4aea-863e-80093d2d34d7
+		summarizeBy: none
+		sourceColumn: product_weight_g
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_length_cm
+		dataType: double
+		lineageTag: a3616670-5a63-4bfa-897b-d96824d5e784
+		summarizeBy: none
+		sourceColumn: product_length_cm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_height_cm
+		dataType: double
+		lineageTag: 2f348740-f350-4ac9-9caf-81ac55bbe48e
+		summarizeBy: none
+		sourceColumn: product_height_cm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_width_cm
+		dataType: double
+		lineageTag: 5235f0c3-4dde-4e2a-aaa4-7a66a726963b
+		summarizeBy: none
+		sourceColumn: product_width_cm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'public dim_products' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_dim_products = Source{[Schema="public",Item="dim_products"]}[Data]
+				in
+				    public_dim_products
+

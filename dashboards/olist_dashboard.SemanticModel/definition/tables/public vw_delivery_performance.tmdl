@@ -1,0 +1,95 @@
+table 'public vw_delivery_performance'
+	lineageTag: 85de083c-5ff1-4339-9468-50ac9323f241
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 1b2eb651-0c54-4cf5-9585-b2e822a03903
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: d2ec9868-bebc-49b7-b390-d5b1f2fc2b0c
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_month
+		dataType: string
+		lineageTag: c3bdad7e-68b1-4ca1-8d95-44a6df16bfcc
+		summarizeBy: none
+		sourceColumn: year_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivered_orders
+		dataType: int64
+		formatString: 0
+		lineageTag: 0811a2a4-61b0-4acf-bd16-2f2f4219bfe9
+		summarizeBy: sum
+		sourceColumn: delivered_orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_delivery_days
+		dataType: double
+		lineageTag: 9f43df2a-1360-405b-a51d-5fac600f389b
+		summarizeBy: sum
+		sourceColumn: avg_delivery_days
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column late_deliveries
+		dataType: int64
+		formatString: 0
+		lineageTag: 6af24ca0-2673-4583-9c30-0340bf06c51c
+		summarizeBy: sum
+		sourceColumn: late_deliveries
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_with_delivery_data
+		dataType: int64
+		formatString: 0
+		lineageTag: 2ccbc6bc-8c7b-46ff-b5be-d6bea82fae82
+		summarizeBy: sum
+		sourceColumn: total_with_delivery_data
+
+		annotation SummarizationSetBy = Automatic
+
+	column late_pct
+		dataType: double
+		lineageTag: 8d314d41-3deb-4220-9c19-8e7de4107520
+		summarizeBy: sum
+		sourceColumn: late_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column on_time_pct
+		dataType: double
+		lineageTag: 4c499916-78c9-45fe-8973-068c2dca5f4f
+		summarizeBy: sum
+		sourceColumn: on_time_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'public vw_delivery_performance' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_vw_delivery_performance = Source{[Schema="public",Item="vw_delivery_performance"]}[Data]
+				in
+				    public_vw_delivery_performance
+

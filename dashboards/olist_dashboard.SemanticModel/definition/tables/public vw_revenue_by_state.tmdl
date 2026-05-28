@@ -1,0 +1,68 @@
+table 'public vw_revenue_by_state'
+	lineageTag: 42e50257-c467-448b-a662-36d52df8f689
+
+	column state
+		dataType: string
+		lineageTag: 2636285d-29b8-4eaa-8d77-f391e243e4a8
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_orders
+		dataType: int64
+		formatString: 0
+		lineageTag: 1088f845-f25d-4498-b270-48264d958ce8
+		summarizeBy: sum
+		sourceColumn: total_orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column unique_customers
+		dataType: int64
+		formatString: 0
+		lineageTag: 733467dd-7b2b-4bcf-9580-8a83fdd8241e
+		summarizeBy: sum
+		sourceColumn: unique_customers
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_revenue
+		dataType: double
+		lineageTag: c5d972e6-9321-4381-8499-0d60d7f7f954
+		summarizeBy: sum
+		sourceColumn: total_revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_order_value
+		dataType: double
+		lineageTag: dac7bba9-b33d-46a2-aa45-df9ff8540511
+		summarizeBy: sum
+		sourceColumn: avg_order_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column late_delivery_pct
+		dataType: double
+		lineageTag: 1a6f4d5c-4d79-42cb-8c9f-6806e2e6a7fb
+		summarizeBy: sum
+		sourceColumn: late_delivery_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'public vw_revenue_by_state' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_vw_revenue_by_state = Source{[Schema="public",Item="vw_revenue_by_state"]}[Data]
+				in
+				    public_vw_revenue_by_state
+

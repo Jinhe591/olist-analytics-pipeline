@@ -1,0 +1,67 @@
+table 'public vw_revenue_by_category'
+	lineageTag: 999f97b3-2578-41ac-b60c-8d09bc4aba2d
+
+	column category
+		dataType: string
+		lineageTag: 0ce64bdc-a6f7-46ee-a288-75f17cf8c8af
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_orders
+		dataType: int64
+		formatString: 0
+		lineageTag: 6445c104-81df-4eab-ae35-51df1c9edb5e
+		summarizeBy: sum
+		sourceColumn: total_orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_revenue
+		dataType: double
+		lineageTag: b40f7238-8479-4b20-97a7-7ad2cd6db609
+		summarizeBy: sum
+		sourceColumn: total_revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_item_price
+		dataType: double
+		lineageTag: 84481373-7c09-4559-8c3b-73f00fed3840
+		summarizeBy: sum
+		sourceColumn: avg_item_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_items_sold
+		dataType: int64
+		formatString: 0
+		lineageTag: f976b909-f5b1-4033-a9c7-c86bab02c1d1
+		summarizeBy: sum
+		sourceColumn: total_items_sold
+
+		annotation SummarizationSetBy = Automatic
+
+	column unique_products
+		dataType: int64
+		formatString: 0
+		lineageTag: 74a74efe-96d0-472d-ac18-3e91a01103a1
+		summarizeBy: sum
+		sourceColumn: unique_products
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public vw_revenue_by_category' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_vw_revenue_by_category = Source{[Schema="public",Item="vw_revenue_by_category"]}[Data]
+				in
+				    public_vw_revenue_by_category
+

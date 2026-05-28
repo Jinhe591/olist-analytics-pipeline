@@ -1,0 +1,100 @@
+table Measure
+	lineageTag: 92af5512-faf2-4308-bb95-be567785c135
+
+	measure 'Total Revenue' =
+			
+			SUM('public fact_orders'[order_revenue])
+		lineageTag: 03817f13-f031-4780-a0cd-95881e14966d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Orders' =
+			
+			COUNTROWS('public fact_orders')
+		formatString: 0
+		lineageTag: 40e6bb27-b9ee-4c65-a6cc-f135d37ce4aa
+
+	measure 'Unique Customers' =
+			
+			DISTINCTCOUNT('public fact_orders'[customer_sk])
+		formatString: 0
+		lineageTag: f23d47df-1e8e-4213-9bbc-bdecb4c8e43e
+
+	measure AOV =
+			
+			DIVIDE([Total Revenue],[Total Orders])
+		lineageTag: 33e8d015-0b0b-43cc-8155-feedd95007e3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Category Revenue' =
+			
+			SUM('public fact_order_items'[price])
+		lineageTag: 79ad755b-d66e-4425-a68f-6cd59d7960f9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Item Revenue' =
+			
+			SUM('public fact_order_items'[total_item_value])
+		lineageTag: 77124713-839d-4bcc-9b71-1c357c2fbded
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Delivery Days' =
+			
+			AVERAGE('public fact_orders'[delivery_duration_days])
+		lineageTag: 2e90a4ec-9b37-46d0-8cae-8bcf2a499b31
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Late Deliveries' =
+			
+			CALCULATE(
+			    COUNTROWS('public fact_orders'),
+			    'public fact_orders'[is_late_delivery] = TRUE()
+			)
+		formatString: 0
+		lineageTag: 2693214a-924b-4d13-b198-e51b52269253
+
+	measure 'On-Time Deliveries' =
+			
+			CALCULATE(
+			    COUNTROWS('public fact_orders'),
+			    'public fact_orders'[is_late_delivery] = FALSE()
+			)
+		formatString: 0
+		lineageTag: c3f5a45e-fb52-423d-9834-3977454da2cb
+
+	measure 'On-Time Delivery %' =
+			
+			DIVIDE(
+			    [On-Time Deliveries],
+			    [On-Time Deliveries] + [Late Deliveries]
+			)
+		lineageTag: c97bf053-4271-4582-9c48-741353b1f9d7
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Delivery Issue Rate' =
+			
+			DIVIDE(
+			    [Late Deliveries],
+			    [Total Orders]
+			)
+		lineageTag: b7c8f57e-b2d9-489b-a742-0281d37e8173
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Measure = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

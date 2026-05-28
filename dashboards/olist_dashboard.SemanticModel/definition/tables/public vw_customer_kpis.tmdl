@@ -1,0 +1,101 @@
+table 'public vw_customer_kpis'
+	lineageTag: 3ba63e6c-3847-4fc8-ac1c-c9bfad198521
+
+	column customer_unique_id
+		dataType: string
+		lineageTag: b488f860-d8a7-40db-9f7f-30a6bcc0b189
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_state
+		dataType: string
+		lineageTag: c2dc3253-66a3-4ccb-adcf-c49ed2082854
+		summarizeBy: none
+		sourceColumn: customer_state
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_city
+		dataType: string
+		lineageTag: a36cfe78-8061-439e-8ee2-9396659a973f
+		summarizeBy: none
+		sourceColumn: customer_city
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_orders
+		dataType: int64
+		formatString: 0
+		lineageTag: 61ce1e70-b069-46bc-85c7-b32523b79110
+		summarizeBy: sum
+		sourceColumn: total_orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_revenue
+		dataType: double
+		lineageTag: 101f1d97-520b-415b-8d0b-ed36dbb78236
+		summarizeBy: sum
+		sourceColumn: total_revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_order_value
+		dataType: double
+		lineageTag: 40f97ff6-81a4-44c3-809d-db669f6482ea
+		summarizeBy: sum
+		sourceColumn: avg_order_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column first_order_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7ea869a8-ded5-4c76-8891-591c888eea0c
+		summarizeBy: none
+		sourceColumn: first_order_date
+
+		variation Variation
+			isDefault
+			relationship: 5c9a1d50-239f-461d-b688-93e70e545458
+			defaultHierarchy: LocalDateTable_485356bb-629a-48f5-9fc6-6b390cf9af5e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_order_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c8932332-1a53-4afb-97cf-3d67af1a8f57
+		summarizeBy: none
+		sourceColumn: last_order_date
+
+		variation Variation
+			isDefault
+			relationship: 20be8929-c8ae-47de-8b43-23e243e9d8dd
+			defaultHierarchy: LocalDateTable_82a2523d-b60c-4f0e-adfc-fd088417c81d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_segment
+		dataType: string
+		lineageTag: 0c54b0f9-2742-4c76-8255-ad2beb63199a
+		summarizeBy: none
+		sourceColumn: customer_segment
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public vw_customer_kpis' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_vw_customer_kpis = Source{[Schema="public",Item="vw_customer_kpis"]}[Data]
+				in
+				    public_vw_customer_kpis
+

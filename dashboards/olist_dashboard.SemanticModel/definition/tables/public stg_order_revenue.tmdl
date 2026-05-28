@@ -1,0 +1,145 @@
+table 'public stg_order_revenue'
+	lineageTag: 1d20ce37-ee13-4f6b-8111-5d573c27572a
+
+	column order_id
+		dataType: string
+		lineageTag: cca57f30-4ca4-42a2-a9d7-722c78f1498e
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_revenue
+		dataType: double
+		lineageTag: c21c4dea-3494-426f-baa3-2c84786fd935
+		summarizeBy: sum
+		sourceColumn: order_revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column order_freight
+		dataType: double
+		lineageTag: 862243a7-92a8-438e-82d2-bcda3019129e
+		summarizeBy: sum
+		sourceColumn: order_freight
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column order_item_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 25ed9131-b69e-4aa3-ab32-e37a8cf73b29
+		summarizeBy: sum
+		sourceColumn: order_item_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column unique_products
+		dataType: int64
+		formatString: 0
+		lineageTag: 50cf9dea-ee72-46a8-99dd-54fc91765bb6
+		summarizeBy: sum
+		sourceColumn: unique_products
+
+		annotation SummarizationSetBy = Automatic
+
+	column unique_sellers
+		dataType: int64
+		formatString: 0
+		lineageTag: 8e2db1c4-f7ce-429c-80b6-dea79e0b1495
+		summarizeBy: sum
+		sourceColumn: unique_sellers
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_total
+		dataType: double
+		lineageTag: 6137620b-8a04-47f1-9449-0d8258d78778
+		summarizeBy: sum
+		sourceColumn: order_total
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column payment_total
+		dataType: double
+		lineageTag: 2ae3143b-3a1b-44ac-a965-8eadeb566018
+		summarizeBy: sum
+		sourceColumn: payment_total
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column payment_types
+		dataType: string
+		lineageTag: a6568712-6ea8-483b-83ce-2f83df62dd39
+		summarizeBy: none
+		sourceColumn: payment_types
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_installments
+		dataType: double
+		lineageTag: c619dce7-4e18-4a5e-acf0-48bd4d4afdc8
+		summarizeBy: sum
+		sourceColumn: payment_installments
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column revenue_match_flag
+		dataType: double
+		lineageTag: 87c282c1-5341-4586-9120-e0cbffba0694
+		summarizeBy: sum
+		sourceColumn: revenue_match_flag
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column customer_id
+		dataType: string
+		lineageTag: 6bbe2710-5769-4f4a-96c9-f908f28a30e1
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_status
+		dataType: string
+		lineageTag: 563aaabc-3a7d-48d0-831d-350dfe37247c
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_purchase_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 314963ef-29a1-4693-9ce1-16f0b9d89aa6
+		summarizeBy: none
+		sourceColumn: order_purchase_timestamp
+
+		variation Variation
+			isDefault
+			relationship: 8bc85090-03fc-482c-8c86-516869218468
+			defaultHierarchy: LocalDateTable_0d60c9d8-497e-4490-8e6f-ab662e926c73.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public stg_order_revenue' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_stg_order_revenue = Source{[Schema="public",Item="stg_order_revenue"]}[Data]
+				in
+				    public_stg_order_revenue
+

@@ -1,0 +1,54 @@
+table 'public dim_sellers'
+	lineageTag: 8c083fe8-199c-4e8e-a31b-c332e10ba91a
+
+	column seller_sk
+		dataType: int64
+		formatString: 0
+		lineageTag: f064a0de-a0f0-42c8-91d8-02107a8fd34e
+		summarizeBy: none
+		sourceColumn: seller_sk
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_id
+		dataType: string
+		lineageTag: 488c30d8-7187-4c15-9fb9-84d4dd3693a7
+		summarizeBy: none
+		sourceColumn: seller_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_zip_code_prefix
+		dataType: string
+		lineageTag: a2bf1764-8832-4930-8b5e-f58d3ddd5b8d
+		summarizeBy: none
+		sourceColumn: seller_zip_code_prefix
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_city
+		dataType: string
+		lineageTag: 366a9d75-7bcd-49a5-adef-698dc7fc2482
+		summarizeBy: none
+		sourceColumn: seller_city
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_state
+		dataType: string
+		lineageTag: c0ce12d0-a359-48d4-98b9-53ea131c309f
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: seller_state
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public dim_sellers' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_dim_sellers = Source{[Schema="public",Item="dim_sellers"]}[Data]
+				in
+				    public_dim_sellers
+

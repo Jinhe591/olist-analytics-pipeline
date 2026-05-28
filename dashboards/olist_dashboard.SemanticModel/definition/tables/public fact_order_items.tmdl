@@ -1,0 +1,127 @@
+table 'public fact_order_items'
+	lineageTag: 158cc48a-afc2-4e0f-a68f-020fb60b33b2
+
+	column item_sk
+		dataType: int64
+		formatString: 0
+		lineageTag: 6fa1530b-9235-46b2-85ee-3088c30ec22a
+		summarizeBy: sum
+		sourceColumn: item_sk
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_id
+		dataType: string
+		lineageTag: ec1c897f-e824-4241-9fde-e04ce4de187a
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_item_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 527c8d85-841e-4d39-a3e4-7e79fa1d3c65
+		summarizeBy: sum
+		sourceColumn: order_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_sk
+		dataType: int64
+		formatString: 0
+		lineageTag: 63756128-c877-4339-9340-a072395afa05
+		summarizeBy: sum
+		sourceColumn: order_sk
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_sk
+		dataType: int64
+		formatString: 0
+		lineageTag: b247b9aa-80ee-46c2-9721-3b4740f82df2
+		summarizeBy: none
+		sourceColumn: product_sk
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_sk
+		dataType: int64
+		formatString: 0
+		lineageTag: 9cf0476f-7294-4e0b-abcb-8c0bb5d832e0
+		summarizeBy: none
+		sourceColumn: seller_sk
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_sk
+		dataType: int64
+		formatString: 0
+		lineageTag: 7d7cc85f-303d-4ed5-98ac-be8770edc2fa
+		summarizeBy: none
+		sourceColumn: customer_sk
+
+		annotation SummarizationSetBy = Automatic
+
+	column purchase_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 93db97e5-d21b-49f9-91ab-c9c866922ab5
+		summarizeBy: sum
+		sourceColumn: purchase_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column price
+		dataType: double
+		lineageTag: 9e1c1c29-3e9c-43f8-91c8-6deeb25c12f1
+		summarizeBy: sum
+		sourceColumn: price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column freight_value
+		dataType: double
+		lineageTag: 2ade9edf-3480-4b1b-b940-bfa3afccb615
+		summarizeBy: sum
+		sourceColumn: freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_item_value
+		dataType: double
+		lineageTag: 192204f4-c326-408e-a5a3-d3ab155505a2
+		summarizeBy: sum
+		sourceColumn: total_item_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column shipping_limit_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 402b6f06-3b7d-4835-b1f7-a182941dfe32
+		summarizeBy: none
+		sourceColumn: shipping_limit_date
+
+		variation Variation
+			isDefault
+			relationship: b29f3a16-4ce6-422a-af31-4426ceb85a74
+			defaultHierarchy: LocalDateTable_b3a1da2c-e3ce-42c3-b9cd-ae88fb4a051c.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public fact_order_items' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost", "olist_db"),
+				    public_fact_order_items = Source{[Schema="public",Item="fact_order_items"]}[Data]
+				in
+				    public_fact_order_items
+

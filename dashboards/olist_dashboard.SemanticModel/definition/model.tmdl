@@ -1,0 +1,60 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-GB
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["Measures (2)","Measure","public vw_customer_kpis","public vw_delivery_performance","public vw_order_status_summary","public vw_monthly_revenue","public vw_revenue_by_category","public vw_payment_analysis","public vw_revenue_by_state","public vw_seller_performance","public vw_top_products","public dim_customers","public dim_date","public dim_products","public dim_sellers","public fact_order_items","public fact_orders","public stg_customers","public stg_order_revenue","public stg_order_items","public stg_orders","public stg_sellers","public stg_products","Sales Measure","Cus Measures"]
+
+annotation PBI_RemovedChildren = [{"remoteItemId":{"foreignKeyRelationship":{"fromTableLocalLineageTag":"158cc48a-afc2-4e0f-a68f-020fb60b33b2","fromColumnLocalLineageTag":"93db97e5-d21b-49f9-91ab-c9c866922ab5","toTableLocalLineageTag":"cb9ef587-8d1e-4641-8896-5dbe63b1e25b","toColumnLocalLineageTag":"81b9073d-ed03-4199-a935-7d5489921759"}},"objectType":"Relationship"},{"remoteItemId":{"foreignKeyRelationship":{"fromTableLocalLineageTag":"158cc48a-afc2-4e0f-a68f-020fb60b33b2","fromColumnLocalLineageTag":"63756128-c877-4339-9340-a072395afa05","toTableLocalLineageTag":"b7d304da-f72c-4ace-9f23-0081e102b43b","toColumnLocalLineageTag":"03c1b781-2954-494b-bf1f-bb96bbeed28f"}},"objectType":"Relationship"},{"remoteItemId":{"foreignKeyRelationship":{"fromTableLocalLineageTag":"158cc48a-afc2-4e0f-a68f-020fb60b33b2","fromColumnLocalLineageTag":"7d7cc85f-303d-4ed5-98ac-be8770edc2fa","toTableLocalLineageTag":"50145721-a740-4004-b7b2-be5ec51866e0","toColumnLocalLineageTag":"74d226d4-7381-40b7-9f36-152a093c0ca5"}},"objectType":"Relationship"}]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Measure
+ref table 'public vw_customer_kpis'
+ref table DateTableTemplate_219882de-54d1-4adc-8a2f-e187f059becf
+ref table LocalDateTable_485356bb-629a-48f5-9fc6-6b390cf9af5e
+ref table LocalDateTable_82a2523d-b60c-4f0e-adfc-fd088417c81d
+ref table 'public vw_delivery_performance'
+ref table 'public vw_order_status_summary'
+ref table 'public vw_monthly_revenue'
+ref table 'public vw_revenue_by_category'
+ref table 'public vw_payment_analysis'
+ref table 'public vw_revenue_by_state'
+ref table 'public vw_seller_performance'
+ref table 'public vw_top_products'
+ref table 'public dim_customers'
+ref table 'public dim_date'
+ref table LocalDateTable_99765d40-f594-438a-a86f-75e5885e0107
+ref table 'public dim_products'
+ref table 'public dim_sellers'
+ref table 'public fact_order_items'
+ref table LocalDateTable_b3a1da2c-e3ce-42c3-b9cd-ae88fb4a051c
+ref table 'public fact_orders'
+ref table LocalDateTable_16ca885e-5810-4927-9666-96592c81c172
+ref table LocalDateTable_29ba012e-4026-4cf6-bc27-5b0c3654e2ef
+ref table LocalDateTable_890f98d6-b663-43e0-bd38-1250ad24b9e3
+ref table LocalDateTable_c386e8c4-95d8-40f7-aff5-64e53f445257
+ref table LocalDateTable_1eaffd81-7378-4ea5-ab70-e361a6c8946c
+ref table 'public stg_customers'
+ref table 'public stg_order_revenue'
+ref table LocalDateTable_0d60c9d8-497e-4490-8e6f-ab662e926c73
+ref table 'public stg_order_items'
+ref table LocalDateTable_4c9c0c18-2427-4bdb-b5cd-e951c6e1562f
+ref table 'public stg_orders'
+ref table LocalDateTable_6d86eafb-d124-4cb6-a7da-ccbfcc561ecf
+ref table LocalDateTable_0a237a88-3cf4-4fd5-a1e7-918f3d592a67
+ref table LocalDateTable_7b29b63f-8c70-4747-8a19-a7ed166dc075
+ref table LocalDateTable_03804bbb-3978-4154-b415-bbe96cf33ae3
+ref table LocalDateTable_e9436dd8-4caf-40ca-843c-efdd1002c71c
+ref table 'public stg_sellers'
+ref table 'public stg_products'
+ref table 'Sales Measure'
+ref table 'Cus Measures'
+
+ref cultureInfo en-US
+
