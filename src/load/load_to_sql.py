@@ -1,15 +1,8 @@
 """
 load_to_sql.py
 --------------
-Loads all processed CSV files into PostgreSQL staging tables using SQLAlchemy.
-Drops dependent views before reloading staging tables, then rebuilds them.
-
-Tables loaded
--------------
-- stg_customers
-- stg_products
-- stg_orders
-- stg_order_revenue
+Loads all processed CSV files into PostgreSQL staging tables.
+Drops dependent views/facts before reloading, then rebuilds them.
 """
 
 import sys
@@ -33,10 +26,13 @@ from src.utils.logging_utils import get_logger
 
 logger = get_logger(__name__, log_file="load.log")
 
-# Map: (csv_filename, target_staging_table, list_of_datetime_cols)
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
+# All processed CSVs to load into staging
 LOAD_MANIFEST: list[tuple[str, str, list[str]]] = [
-    (CUSTOMERS_CLEANED, "stg_customers", []),
-    (PRODUCTS_CLEANED,  "stg_products",  []),
+    (CUSTOMERS_CLEANED,     "stg_customers", []),
+    (PRODUCTS_CLEANED,      "stg_products",  []),
+    ("sellers_cleaned.csv", "stg_sellers",   []),
     (
         ORDERS_CLEANED,
         "stg_orders",
@@ -55,8 +51,7 @@ LOAD_MANIFEST: list[tuple[str, str, list[str]]] = [
     ),
 ]
 
-# Views and fact tables that depend on staging tables — must be dropped first
-# and rebuilt after staging reload
+# Objects that depend on staging — drop before reload
 DEPENDENT_OBJECTS: list[str] = [
     "vw_revenue_by_category",
     "vw_monthly_revenue",
@@ -69,14 +64,19 @@ DEPENDENT_OBJECTS: list[str] = [
     "vw_order_status_summary",
     "fact_order_items",
     "fact_orders",
+    "dim_sellers",
+    "dim_products",
+    "dim_customers",
 ]
 
-# SQL files to rebuild after staging reload (in dependency order)
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
+# SQL files to rebuild after staging reload
 REBUILD_SQL_FILES: list[tuple[str, str]] = [
-    ("Rebuild fact_orders",      "sql/facts/fact_orders.sql"),
-    ("Rebuild business views",   "sql/views/business_views.sql"),
-    ("Rebuild seller views",     "sql/views/seller_performance_views.sql"),
+    ("Rebuild dim_customers & products", "sql/dimensions/dim_customers_products.sql"),
+    ("Rebuild dim_sellers",              "sql/dimensions/dim_sellers.sql"),
+    ("Rebuild fact_orders",              "sql/facts/fact_orders.sql"),
+    ("Rebuild fact_order_items",         "sql/facts/fact_order_items.sql"),
+    ("Rebuild business views",           "sql/views/business_views.sql"),
+    ("Rebuild seller views",             "sql/views/seller_performance_views.sql"),
 ]
 
 
@@ -91,11 +91,8 @@ def get_engine():
 
 
 def drop_dependent_objects(engine) -> None:
-    """
-    Drop views and fact tables that depend on staging tables.
-    Uses CASCADE to handle nested dependencies.
-    """
-    logger.info("Dropping dependent views and fact tables…")
+    """Drop views and fact tables that depend on staging tables."""
+    logger.info("Dropping dependent objects…")
     with engine.connect() as conn:
         for obj in DEPENDENT_OBJECTS:
             conn.execute(text(f"DROP VIEW IF EXISTS {obj} CASCADE"))
@@ -132,8 +129,8 @@ def load_table(engine, csv_name: str, table_name: str, datetime_cols: list[str])
 
 
 def rebuild_dependent_objects(engine) -> None:
-    """Rebuild fact tables and views after staging reload."""
-    logger.info("Rebuilding fact tables and views…")
+    """Rebuild dimensions, fact tables and views after staging reload."""
+    logger.info("Rebuilding dimensions, facts and views…")
     with engine.connect() as conn:
         for label, rel_path in REBUILD_SQL_FILES:
             sql_path = PROJECT_ROOT / rel_path
@@ -170,7 +167,7 @@ def run() -> None:
         logger.error("Could not connect to database: %s", exc)
         sys.exit(1)
 
-    # Step 1: Drop dependent objects so staging tables can be replaced
+    # Step 1: Drop dependent objects
     try:
         drop_dependent_objects(engine)
     except Exception as exc:
@@ -191,19 +188,18 @@ def run() -> None:
     # Step 3: Validate row counts
     run_post_load_validation(engine)
 
-    # Step 4: Rebuild fact tables and views
+    # Step 4: Rebuild dimensions, facts and views
     try:
         rebuild_dependent_objects(engine)
     except Exception as exc:
-        logger.warning("Could not rebuild dependent objects: %s", exc)
-        logger.warning("Run run_sql_pipeline.py manually to rebuild views.")
+        logger.warning("Could not rebuild: %s", exc)
+        logger.warning("Run run_sql_pipeline.py manually to rebuild.")
 
     logger.info("=" * 60)
     logger.info("Staging Load — COMPLETE")
     logger.info("=" * 60)
 
 
-# Keep main() as alias for backward compatibility
 main = run
 
 if __name__ == "__main__":

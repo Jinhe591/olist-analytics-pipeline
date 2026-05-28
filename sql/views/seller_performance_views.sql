@@ -1,14 +1,13 @@
 -- =============================================================
 -- views/seller_performance_views.sql
---
--- Seller-focused analytical views for extended BI analysis.
+-- Seller-focused analytical views.
+-- Uses public. schema prefix to avoid search path issues.
 -- =============================================================
-
 
 -- ─────────────────────────────────────────────
 -- vw_seller_performance
--- Revenue and fulfillment metrics per seller.
 -- ─────────────────────────────────────────────
+DROP VIEW IF EXISTS vw_seller_performance CASCADE;
 
 CREATE OR REPLACE VIEW vw_seller_performance AS
 SELECT
@@ -21,15 +20,14 @@ SELECT
     ROUND(AVG(foi.price)::NUMERIC, 2)           AS avg_item_price,
     ROUND(SUM(foi.freight_value)::NUMERIC, 2)   AS total_freight_collected,
     COUNT(DISTINCT dp.product_category_name_english) AS unique_categories,
-    -- Late delivery rate for this seller's orders
     ROUND(
         100.0 * SUM(fo.is_late_delivery::INT)
             / NULLIF(SUM(CASE WHEN fo.is_late_delivery IS NOT NULL THEN 1 END), 0), 2
     )                                           AS seller_late_delivery_pct
-FROM fact_order_items foi
-JOIN dim_sellers  ds ON foi.seller_sk  = ds.seller_sk
-JOIN dim_products dp ON foi.product_sk = dp.product_sk
-JOIN fact_orders  fo ON foi.order_sk   = fo.order_sk
+FROM public.fact_order_items foi
+JOIN public.dim_sellers  ds ON foi.seller_sk  = ds.seller_sk
+JOIN public.dim_products dp ON foi.product_sk = dp.product_sk
+JOIN public.fact_orders  fo ON foi.order_sk   = fo.order_sk
 WHERE fo.order_status NOT IN ('canceled', 'unavailable')
 GROUP BY ds.seller_id, ds.seller_city, ds.seller_state
 ORDER BY total_revenue DESC;
@@ -40,21 +38,21 @@ COMMENT ON VIEW vw_seller_performance IS
 
 -- ─────────────────────────────────────────────
 -- vw_top_products
--- Top 50 products by revenue (for product table visual).
 -- ─────────────────────────────────────────────
+DROP VIEW IF EXISTS vw_top_products CASCADE;
 
 CREATE OR REPLACE VIEW vw_top_products AS
 SELECT
     dp.product_id,
-    dp.product_category_name_english    AS category,
-    COUNT(DISTINCT foi.order_id)        AS total_orders,
-    COUNT(foi.item_sk)                  AS units_sold,
-    ROUND(SUM(foi.price)::NUMERIC, 2)   AS total_revenue,
-    ROUND(AVG(foi.price)::NUMERIC, 2)   AS avg_price,
-    RANK() OVER (ORDER BY SUM(foi.price) DESC) AS revenue_rank
-FROM fact_order_items foi
-JOIN dim_products dp ON foi.product_sk = dp.product_sk
-JOIN fact_orders  fo ON foi.order_sk   = fo.order_sk
+    dp.product_category_name_english            AS category,
+    COUNT(DISTINCT foi.order_id)                AS total_orders,
+    COUNT(foi.item_sk)                          AS units_sold,
+    ROUND(SUM(foi.price)::NUMERIC, 2)           AS total_revenue,
+    ROUND(AVG(foi.price)::NUMERIC, 2)           AS avg_price,
+    RANK() OVER (ORDER BY SUM(foi.price) DESC)  AS revenue_rank
+FROM public.fact_order_items foi
+JOIN public.dim_products dp ON foi.product_sk = dp.product_sk
+JOIN public.fact_orders  fo ON foi.order_sk   = fo.order_sk
 WHERE fo.order_status NOT IN ('canceled', 'unavailable')
 GROUP BY dp.product_id, dp.product_category_name_english
 ORDER BY total_revenue DESC
@@ -66,19 +64,18 @@ COMMENT ON VIEW vw_top_products IS
 
 -- ─────────────────────────────────────────────
 -- vw_payment_analysis
--- Payment method distribution and installment patterns.
 -- ─────────────────────────────────────────────
+DROP VIEW IF EXISTS vw_payment_analysis CASCADE;
 
 CREATE OR REPLACE VIEW vw_payment_analysis AS
 WITH payment_types_exploded AS (
-    -- Split pipe-separated payment types back to individual rows
     SELECT
         fo.order_sk,
         fo.order_revenue,
         fo.payment_installments,
         fo.purchase_date_key,
         TRIM(unnested.type) AS payment_type
-    FROM fact_orders fo,
+    FROM public.fact_orders fo,
          LATERAL UNNEST(STRING_TO_ARRAY(fo.payment_types, '|')) AS unnested(type)
     WHERE fo.order_status NOT IN ('canceled', 'unavailable')
 )
@@ -97,13 +94,13 @@ GROUP BY payment_type
 ORDER BY total_orders DESC;
 
 COMMENT ON VIEW vw_payment_analysis IS
-    'Payment method distribution: volume, revenue, and installment behaviour.';
+    'Payment method distribution.';
 
 
 -- ─────────────────────────────────────────────
 -- vw_order_status_summary
--- Order funnel — counts and revenue by status.
 -- ─────────────────────────────────────────────
+DROP VIEW IF EXISTS vw_order_status_summary CASCADE;
 
 CREATE OR REPLACE VIEW vw_order_status_summary AS
 SELECT
@@ -114,9 +111,9 @@ SELECT
             / SUM(COUNT(order_id)) OVER (), 2
     )                                           AS pct_of_all_orders,
     ROUND(COALESCE(SUM(order_revenue), 0)::NUMERIC, 2) AS total_revenue
-FROM fact_orders
+FROM public.fact_orders
 GROUP BY order_status
 ORDER BY order_count DESC;
 
 COMMENT ON VIEW vw_order_status_summary IS
-    'Order funnel breakdown by status with revenue and percentage share.';
+    'Order funnel breakdown by status.';

@@ -1,25 +1,10 @@
 -- =============================================================
 -- dimensions/dim_sellers.sql
---
--- Seller dimension derived from olist_sellers_dataset.csv.
--- Loaded via load_to_sql.py into stg_sellers first.
+-- Seller dimension populated from stg_sellers.
+-- NOTE: stg_sellers is loaded by the Python pipeline BEFORE
+--       this script runs. Do NOT drop or recreate stg_sellers here.
 -- =============================================================
 
--- ── Staging table ────────────────────────────
-DROP TABLE IF EXISTS stg_sellers CASCADE;
-
-CREATE TABLE stg_sellers (
-    seller_id               VARCHAR(50)  NOT NULL,
-    seller_zip_code_prefix  VARCHAR(10),
-    seller_city             VARCHAR(100),
-    seller_state            CHAR(2),
-    CONSTRAINT pk_stg_sellers PRIMARY KEY (seller_id)
-);
-
-COMMENT ON TABLE stg_sellers IS
-    'Staging: one row per seller_id.';
-
--- ── Dimension table ──────────────────────────
 DROP TABLE IF EXISTS dim_sellers CASCADE;
 
 CREATE TABLE dim_sellers (
